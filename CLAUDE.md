@@ -150,6 +150,117 @@ You orchestrate two specialized agents in sequence:
 5. **Monitor Progress** → Track milestone completion
 6. **Report Success** → Summarize delivered solution
 
+### Supporting Agents - Testing & Diagnostics
+
+Beyond the core two-phase workflow, you have access to specialized agents for testing and debugging:
+
+#### n8n-webhook-tester: Automated Webhook Testing
+**Purpose**: Create and execute bash test scripts to validate webhook endpoints, handling JWT authentication and cleaning up afterward.
+
+**When to Invoke**:
+- After creating a workflow with webhook trigger
+- To validate webhook responds correctly to test payloads
+- Testing JWT token authentication
+- Verifying specific data formats (nested JSON, arrays, etc.)
+- Debugging webhook delivery issues
+
+**How It Works**:
+1. Creates bash test script in `/tmp/test_webhook_[timestamp].sh`
+2. Includes JWT token handling if needed
+3. Executes the script with proper error handling
+4. Retrieves execution data from n8n API
+5. Analyzes results and reports findings
+6. Cleans up test script afterward
+
+**Key Features**:
+- Handles JWT authentication automatically
+- Creates colorized output for readability
+- Includes timeout protection
+- Retrieves n8n execution data for verification
+- Always cleans up test files
+
+**Example Usage**:
+```
+Builder completes webhook workflow
+You: "I'll use the n8n-webhook-tester agent to create a test script
+     and verify the webhook works correctly with sample data."
+```
+
+**Test Script Capabilities**:
+- Basic POST requests with JSON payloads
+- JWT token generation and authentication
+- Custom headers and authentication
+- Complex nested JSON structures
+- Execution status verification via n8n API
+
+#### n8n-workflow-debugger: Root Cause Analysis
+**Purpose**: Systematically diagnose workflow problems through execution analysis and error pattern recognition.
+
+**When to Invoke**:
+- Workflow failing consistently or intermittently
+- Unexpected results or incorrect data transformations
+- Performance degradation investigation
+- After workflow modifications (proactive validation)
+- Complex error patterns need identification
+
+**Diagnostic Process**:
+1. **Establish Context**: Retrieve workflow config and execution history
+2. **Execution Analysis**: Compare failed vs successful runs
+3. **Configuration Deep Dive**: Examine problematic node configurations
+4. **Root Cause Identification**: Synthesize findings into clear diagnosis
+5. **Evidence-Based Reporting**: Present findings with specific evidence
+
+**What It Provides**:
+- Specific error messages and node locations
+- Execution IDs and timestamps for reference
+- Data flow analysis showing where transformations fail
+- Pattern recognition across multiple executions
+- Root cause explanation with contributing factors
+- Recommended next steps (without implementing fixes)
+
+**What It Does NOT Do**:
+- Does not modify workflows or configurations
+- Does not implement fixes
+- Does not make assumptions without execution data
+
+**Example Usage**:
+```
+User: "My workflow keeps failing on the HTTP Request node"
+You: "I'll use the n8n-workflow-debugger agent to analyze the
+     execution history and identify the root cause of the failures."
+```
+
+**Common Issues Diagnosed**:
+- Authentication/credential problems
+- Data format mismatches
+- Expression syntax errors
+- External service timeouts
+- Connection/data flow issues
+- Resource constraints
+
+### When to Use Which Agent
+
+**Use n8n-webhook-tester when**:
+- Testing webhook-triggered workflows
+- Validating JWT authentication works
+- Quick validation after webhook workflow creation
+- Testing specific payload formats
+- Debugging webhook HTTP response issues
+
+**Use n8n-workflow-debugger when**:
+- Need to understand WHY something is failing
+- Problems are intermittent or pattern-based
+- Need to trace data flow through nodes
+- Performance analysis required
+- Post-modification validation needed
+
+**Use Both Together**:
+1. Build workflow with webhook trigger (Builder agent)
+2. Test webhook endpoint (Webhook-tester agent)
+3. If issues found, diagnose root cause (Workflow-debugger agent)
+4. Fix issues based on diagnosis (Builder agent)
+5. Retest with webhook-tester agent
+
 ## MCP Integration
 
 The `.mcp.json` file configures the n8n-MCP server to run inside Docker. This provides Claude Code with specialized MCP tools (all prefixed with `mcp__n8n-mcp__`) to interact with n8n.
@@ -316,3 +427,5 @@ For each iteration:
 - validate workflow after every partial update
 - Never use full workflow update to fix connections. Use update_partial_workflow connection fixing capabilities
 - After each conversaction compact, call tools_documentation to have the overview of tools always in your context memory
+- ALWAYS call tool_documentation on a specific tool you are about to use, if you don't have this documentation in recent memory
+- when you create workflow with webhook "fresh", the user needs to run one test execution, then activate workflow before you can test it
