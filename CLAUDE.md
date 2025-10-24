@@ -429,3 +429,4 @@ For each iteration:
 - After each conversaction compact, call tools_documentation to have the overview of tools always in your context memory
 - ALWAYS call tool_documentation on a specific tool you are about to use, if you don't have this documentation in recent memory
 - when you create workflow with webhook "fresh", the user needs to run one test execution, then activate workflow before you can test it
+- pinned data does not affect production executions. It is used only in test executions for debugging.
