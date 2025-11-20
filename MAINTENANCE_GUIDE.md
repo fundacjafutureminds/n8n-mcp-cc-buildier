@@ -1,5 +1,17 @@
 # 🔧 Przewodnik Konserwacji n8n + n8n-mcp
 
+## 📖 Legenda - gdzie wykonywać komendy:
+
+| Ikona | Narzędzie | Opis |
+|-------|-----------|------|
+| 🖥️ | **Git Bash** | Terminal Git Bash (preferowany) |
+| 💻 | **PowerShell** | Windows PowerShell (alternatywa) |
+| 🌐 | **Przeglądarka** | Chrome/Firefox/Edge |
+| 📝 | **Notatnik** | Notepad lub inny edytor tekstu |
+| 🖱️ | **Aplikacja** | Kliknięcia GUI (Docker Desktop, Claude Desktop) |
+
+---
+
 ## Spis treści
 1. [Uruchamianie systemu](#1-uruchamianie-systemu)
 2. [Aktualizacja n8n](#2-aktualizacja-n8n)
@@ -16,15 +28,23 @@
 ### Sekwencja startowa (po restarcie komputera)
 
 #### KROK 1: Uruchom Docker Desktop
+
+🖱️ **Aplikacja - Docker Desktop:**
 ```
-1. Kliknij ikonę Docker Desktop (wieloryb)
+1. Kliknij ikonę Docker Desktop (wieloryb) w menu Start
 2. Poczekaj aż ikona przestanie migać (Docker ready)
-3. Sprawdź: docker ps (powinno działać bez błędu)
+3. Sprawdź czy działa (następny krok)
+```
+
+🖥️ **Git Bash - Sprawdź Docker:**
+```bash
+docker ps
+# Jeśli pokazuje tabelę (nawet pustą) → Docker działa ✅
 ```
 
 #### KROK 2: Uruchom n8n + n8n-mcp-server
 
-**Git Bash:**
+🖥️ **Git Bash:**
 ```bash
 # Przejdź do folderu projektu
 cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
@@ -50,6 +70,7 @@ cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
 
 #### KROK 3: Uruchom Claude Desktop
 
+🖱️ **Aplikacja - Menu Start:**
 ```
 1. Uruchom Claude Desktop z menu Start
 2. MCP n8n-mcp połączy się automatycznie (lokalny npx)
@@ -58,23 +79,41 @@ cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
 
 ### Sprawdzanie stanu
 
-**n8n działa?**
+#### n8n działa?
+
+🖥️ **Git Bash:**
 ```bash
 curl http://localhost:5678/healthz
-# Lub otwórz w przeglądarce: http://localhost:5678
 ```
 
-**Docker kontenery działają?**
+🌐 **Przeglądarka:**
+```
+Otwórz: http://localhost:5678
+Powinieneś zobaczyć interfejs n8n
+```
+
+#### Docker kontenery działają?
+
+🖥️ **Git Bash:**
 ```bash
 docker ps
 # Powinny być 2 kontenery:
-# - n8n-test
+# - n8n-test (port 5678)
 # - n8n-mcp-server
 ```
 
-**MCP działa?**
+💻 **PowerShell (alternatywa):**
+```powershell
+docker ps
 ```
-Claude Desktop → Chat → "Czy widzisz narzędzia n8n-mcp?"
+
+#### MCP działa?
+
+🖱️ **Aplikacja - Claude Desktop:**
+```
+1. Otwórz Claude Desktop Chat
+2. Napisz: "Czy widzisz narzędzia n8n-mcp?"
+3. Powinno pokazać: 42 tools available
 ```
 
 ---
@@ -83,25 +122,34 @@ Claude Desktop → Chat → "Czy widzisz narzędzia n8n-mcp?"
 
 ### Sprawdź obecną wersję
 
+🖥️ **Git Bash:**
 ```bash
 docker exec n8n-test n8n --version
 # Przykład output: 1.71.2
 ```
 
+💻 **PowerShell (alternatywa):**
+```powershell
+docker exec n8n-test n8n --version
+```
+
 ### Aktualizuj do najnowszej wersji
 
+🖥️ **Git Bash:**
 ```bash
-# KROK 1: Zatrzymaj kontenery
+# KROK 1: Przejdź do folderu projektu
 cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
+
+# KROK 2: Zatrzymaj kontenery
 docker compose down
 
-# KROK 2: Pobierz najnowszy obraz n8n
+# KROK 3: Pobierz najnowszy obraz n8n
 docker pull n8nio/n8n:latest
 
-# KROK 3: Uruchom ponownie (użyje nowej wersji)
+# KROK 4: Uruchom ponownie (użyje nowej wersji)
 ./scripts/start_servers.sh
 
-# KROK 4: Sprawdź nową wersję
+# KROK 5: Sprawdź nową wersję
 docker exec n8n-test n8n --version
 ```
 
@@ -114,15 +162,19 @@ Status: Image is up to date (jeśli już najnowsza)
 
 ### Aktualizuj do konkretnej wersji
 
+📝 **Notatnik - Edytuj docker-compose.yml:**
+```
+1. Otwórz: C:\users\mstrz\onedrive\dokumenty\docker\n8n-mcp-cc-buildier\docker-compose.yml
+2. Znajdź linię: image: n8nio/n8n:latest
+3. Zmień na: image: n8nio/n8n:1.72.0  (przykład konkretnej wersji)
+4. Zapisz (Ctrl+S)
+```
+
+🖥️ **Git Bash - Zastosuj zmiany:**
 ```bash
-# KROK 1: Edytuj docker-compose.yml
-nano docker-compose.yml
+cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
 
-# KROK 2: Zmień linię:
-# BYŁO:  image: n8nio/n8n:latest
-# BĘDZIE: image: n8nio/n8n:1.72.0  (przykład konkretnej wersji)
-
-# KROK 3: Zatrzymaj i uruchom ponownie
+# Zatrzymaj i uruchom ponownie
 docker compose down
 docker compose pull
 ./scripts/start_servers.sh
@@ -150,6 +202,7 @@ C:\Users\mstrz\.n8n-mcp-test\
 
 ### Sprawdź czy są aktualizacje
 
+🖥️ **Git Bash:**
 ```bash
 cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
 
@@ -176,6 +229,7 @@ Your branch is behind 'origin/main' by 5 commits
 
 ### Pobierz aktualizacje
 
+🖥️ **Git Bash:**
 ```bash
 # SPOSÓB 1: Standardowy (jeśli NIE miałeś lokalnych zmian)
 git pull origin main
@@ -201,8 +255,8 @@ git stash pop          # Przywróć lokalne zmiany (jeśli potrzebne)
 
 ### Po aktualizacji - restart
 
+🖥️ **Git Bash (jeśli zmienił się docker-compose.yml):**
 ```bash
-# Jeśli zmienił się docker-compose.yml
 docker compose down
 ./scripts/start_servers.sh
 ```
@@ -213,19 +267,40 @@ docker compose down
 
 ### Sprawdź obecną wersję
 
+🖥️ **Git Bash:**
 ```bash
 npx n8n-mcp --version
 # Przykład: 1.0.0
 ```
 
+💻 **PowerShell (alternatywa):**
+```powershell
+npx n8n-mcp --version
+```
+
+### Sprawdź czy jest nowsza wersja
+
+🖥️ **Git Bash:**
+```bash
+npm view n8n-mcp version
+# Porównaj z Twoją wersją powyżej
+```
+
 ### Aktualizuj
 
+🖥️ **Git Bash:**
 ```bash
+npm update -g n8n-mcp
+```
+
+💻 **PowerShell (alternatywa):**
+```powershell
 npm update -g n8n-mcp
 ```
 
 ### Sprawdź nową wersję
 
+🖥️ **Git Bash:**
 ```bash
 npx n8n-mcp --version
 # Powinna być nowsza
@@ -233,11 +308,21 @@ npx n8n-mcp --version
 
 ### Po aktualizacji - restart Claude Desktop
 
+🖥️ **Git Bash:**
 ```bash
 # Zamknij Claude Desktop całkowicie
-taskkill /F /IM "claude.exe"
+taskkill.exe /IM "Claude.exe" /F
+```
 
-# Uruchom ponownie z menu Start
+💻 **PowerShell (alternatywa):**
+```powershell
+# Zamknij Claude Desktop całkowicie
+taskkill /IM "Claude.exe" /F
+```
+
+🖱️ **Aplikacja - Menu Start:**
+```
+Uruchom Claude Desktop ponownie z menu Start
 ```
 
 **Nie trzeba zmieniać `claude_desktop_config.json`** - używa `npx n8n-mcp` (zawsze najnowsza zainstalowana wersja)
@@ -260,28 +345,38 @@ n8n-mcp-cc-buildier    ← Skrypty i konfiguracja
 
 #### SPOSÓB 1: Przez n8n UI (polecane)
 
+🌐 **Przeglądarka:**
 ```
 1. Otwórz http://localhost:5678
-2. Settings → Community Nodes
-3. Kliknij "Install a community node"
-4. Wpisz nazwę pakietu (np. n8n-nodes-telegram)
-5. Kliknij "Install"
-6. Restart n8n (docker compose restart)
+2. Kliknij Settings (⚙️) w lewym dolnym rogu
+3. Kliknij Community Nodes
+4. Kliknij "Install a community node"
+5. Wpisz nazwę pakietu (np. n8n-nodes-telegram)
+6. Kliknij "Install"
+7. Poczekaj na instalację
+```
+
+🖥️ **Git Bash - Restart n8n:**
+```bash
+cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
+docker compose restart n8n
 ```
 
 #### SPOSÓB 2: Ręcznie (zaawansowane)
 
+🖥️ **Git Bash:**
 ```bash
 # Wejdź do kontenera n8n
 docker exec -it n8n-test sh
 
-# Zainstaluj node
+# Zainstaluj node (WEWNĄTRZ kontenera)
 npm install n8n-nodes-telegram
 
-# Wyjdź
+# Wyjdź z kontenera
 exit
 
 # Restart kontenera
+cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
 docker compose restart n8n
 ```
 
@@ -296,9 +391,11 @@ n8n-nodes-document-generator - PDF/DOCX generation
 
 ### Sprawdź zainstalowane Community Nodes
 
+🌐 **Przeglądarka:**
 ```
-n8n UI → Settings → Community Nodes
-→ Lista zainstalowanych nodes
+1. Otwórz http://localhost:5678
+2. Settings → Community Nodes
+3. Lista zainstalowanych nodes
 ```
 
 ### ⚠️ UWAGA po aktualizacji n8n
@@ -318,11 +415,15 @@ n8n UI → Settings → Community Nodes
 
 #### A) KRYTYCZNE - Twoje dane (workflow + credentials)
 
+🖥️ **Git Bash:**
 ```bash
 # Backup wszystkiego
 cp -r ~/.n8n-mcp-test ~/Backup/n8n-data-$(date +%Y%m%d)
+```
 
-# Windows (PowerShell):
+💻 **PowerShell:**
+```powershell
+# Backup wszystkiego
 Copy-Item -Recurse -Path "$env:USERPROFILE\.n8n-mcp-test" -Destination "$env:USERPROFILE\Backup\n8n-data-$(Get-Date -Format 'yyyyMMdd')"
 ```
 
@@ -334,6 +435,7 @@ Copy-Item -Recurse -Path "$env:USERPROFILE\.n8n-mcp-test" -Destination "$env:USE
 
 #### B) OPCJONALNIE - Projekt (skrypty)
 
+🖥️ **Git Bash:**
 ```bash
 # Backup projektu
 cp -r /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier ~/Backup/n8n-project-$(date +%Y%m%d)
@@ -348,14 +450,16 @@ cp -r /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier ~/Backup/n8n-
 
 ### Restore z backup
 
+🖥️ **Git Bash:**
 ```bash
-# Zatrzymaj n8n
+# KROK 1: Zatrzymaj n8n
+cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
 docker compose down
 
-# Przywróć dane
+# KROK 2: Przywróć dane
 cp -r ~/Backup/n8n-data-20241115/* ~/.n8n-mcp-test/
 
-# Uruchom ponownie
+# KROK 3: Uruchom ponownie
 ./scripts/start_servers.sh
 ```
 
@@ -372,47 +476,66 @@ cp -r ~/Backup/n8n-data-20241115/* ~/.n8n-mcp-test/
 
 ### Problem: n8n nie startuje
 
-**Sprawdź:**
+#### Sprawdź:
+
+🖥️ **Git Bash - Logi n8n:**
 ```bash
-# Logi n8n
 docker logs n8n-test
-
-# Czy Docker działa?
-docker ps
-
-# Czy port 5678 jest wolny?
-lsof -i :5678  # macOS/Linux
-netstat -ano | findstr :5678  # Windows
 ```
 
-**Rozwiązanie:**
+🖥️ **Git Bash - Czy Docker działa:**
 ```bash
-# Restart wszystkiego
+docker ps
+```
+
+🖥️ **Git Bash - Czy port 5678 jest wolny:**
+```bash
+netstat -ano | findstr :5678
+# Jeśli coś pokazuje → port zajęty
+```
+
+💻 **PowerShell (alternatywa - port):**
+```powershell
+netstat -ano | findstr :5678
+```
+
+#### Rozwiązanie:
+
+🖥️ **Git Bash - Restart wszystkiego:**
+```bash
+cd /c/users/mstrz/onedrive/dokumenty/docker/n8n-mcp-cc-buildier
 docker compose down
 docker compose up -d
 ```
 
+---
+
 ### Problem: Claude Desktop nie widzi MCP tools
 
-**Sprawdź:**
-```bash
-# Czy n8n-mcp jest zainstalowany?
-npx n8n-mcp --version
+#### Sprawdź:
 
-# Sprawdź config
-cat "$APPDATA/Claude/claude_desktop_config.json"
-# (Windows PowerShell)
+🖥️ **Git Bash - Czy n8n-mcp jest zainstalowany:**
+```bash
+npx n8n-mcp --version
 ```
 
-**Rozwiązanie:**
+💻 **PowerShell - Sprawdź config:**
+```powershell
+notepad $env:APPDATA\Claude\claude_desktop_config.json
+```
+
+#### Rozwiązanie:
+
+🖥️ **Git Bash - Reinstall n8n-mcp:**
 ```bash
-# Reinstall n8n-mcp
 npm install -g n8n-mcp
 
 # Restart Claude Desktop
-taskkill /F /IM "claude.exe"
-# Uruchom ponownie
+taskkill.exe /IM "Claude.exe" /F
+# Uruchom ponownie z menu Start
 ```
+
+---
 
 ### Problem: API key nie działa
 
@@ -421,20 +544,36 @@ taskkill /F /IM "claude.exe"
 MCP server initialized with 23 tools (n8n API: not configured)
 ```
 
-**Rozwiązanie:**
+#### Rozwiązanie:
+
+🖥️ **Git Bash - Sprawdź czy API key jest zapisany:**
 ```bash
-# Sprawdź czy API key jest zapisany
 cat ~/.n8n-mcp-test/.n8n-api-key
-
-# Jeśli pusty - wygeneruj nowy w n8n UI
-# http://localhost:5678 → Settings → API → Create API Key
-
-# Zapisz nowy klucz
-echo "NOWY_KLUCZ" > ~/.n8n-mcp-test/.n8n-api-key
-
-# Restart
-docker compose restart n8n-mcp
 ```
+
+🌐 **Przeglądarka - Wygeneruj nowy w n8n UI:**
+```
+1. Otwórz http://localhost:5678
+2. Settings → API
+3. Create API Key
+4. Skopiuj klucz
+```
+
+📝 **Notatnik - Zaktualizuj Claude Desktop config:**
+```
+1. Otwórz: %APPDATA%\Claude\claude_desktop_config.json
+2. Znajdź: "N8N_API_KEY": "..."
+3. Wklej nowy klucz
+4. Zapisz (Ctrl+S)
+```
+
+🖥️ **Git Bash - Restart Claude Desktop:**
+```bash
+taskkill.exe /IM "Claude.exe" /F
+# Uruchom ponownie
+```
+
+---
 
 ### Problem: Workflow nie działa po aktualizacji
 
@@ -443,30 +582,38 @@ docker compose restart n8n-mcp
 2. Zmiana w API node'a
 3. Zmiana w składni wyrażeń
 
-**Rozwiązanie:**
-1. Sprawdź execution history w n8n UI
-2. Zobacz dokładny błąd
-3. Zaktualizuj community nodes
-4. Dopasuj konfigurację node'ów
+#### Rozwiązanie:
+
+🌐 **Przeglądarka - Sprawdź execution history:**
+```
+1. Otwórz http://localhost:5678
+2. Kliknij na workflow
+3. Executions → Zobacz dokładny błąd
+```
+
+**Następne kroki:**
+1. Sprawdź kompatybilność community nodes na npmjs.com
+2. Zaktualizuj community node do nowszej wersji
+3. Dopasuj konfigurację node'ów
 
 ---
 
 ## 📅 Rutynowa konserwacja (checklist)
 
 ### Co tydzień
-- [ ] Sprawdź czy Docker Desktop ma aktualizacje
-- [ ] Backup danych workflow (`~/.n8n-mcp-test`)
+- [ ] 🖱️ Sprawdź czy Docker Desktop ma aktualizacje (Settings w aplikacji)
+- [ ] 🖥️ Backup danych workflow (Git Bash: `cp -r ~/.n8n-mcp-test ~/Backup/...`)
 
 ### Co miesiąc
-- [ ] Aktualizuj n8n (`docker pull n8nio/n8n:latest`)
-- [ ] Aktualizuj n8n-mcp (`npm update -g n8n-mcp`)
-- [ ] Aktualizuj projekt (`git pull origin main`)
-- [ ] Sprawdź czy community nodes są kompatybilne
+- [ ] 🖥️ Aktualizuj n8n (Git Bash: `docker pull n8nio/n8n:latest`)
+- [ ] 🖥️ Aktualizuj n8n-mcp (Git Bash: `npm update -g n8n-mcp`)
+- [ ] 🖥️ Aktualizuj projekt (Git Bash: `git pull origin main`)
+- [ ] 🌐 Sprawdź czy community nodes są kompatybilne (n8n UI)
 
 ### Przed każdą aktualizacją n8n
-- [ ] Backup danych (`~/.n8n-mcp-test`)
-- [ ] Sprawdź changelog n8n (https://github.com/n8n-io/n8n/releases)
-- [ ] Sprawdź kompatybilność community nodes
+- [ ] 🖥️ Backup danych (Git Bash: `cp -r ~/.n8n-mcp-test ~/Backup/...`)
+- [ ] 🌐 Sprawdź changelog n8n (https://github.com/n8n-io/n8n/releases)
+- [ ] 🌐 Sprawdź kompatybilność community nodes (npmjs.com)
 
 ---
 
@@ -485,5 +632,5 @@ docker compose restart n8n-mcp
 
 ---
 
-**Ostatnia aktualizacja:** 2024-11-15
+**Ostatnia aktualizacja:** 2024-11-15 (v2 - dodano ikony narzędzi)
 **Autor:** n8n-mcp-cc-buildier project
