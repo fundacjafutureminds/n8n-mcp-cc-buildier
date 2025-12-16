@@ -14,3 +14,8 @@ node_modules/
 *.swo
 *~
 .mcp.json
+
+# Profile switching credentials (keep templates, ignore customized versions)
+scripts/profile-switching/YOUR-CREDENTIALS.ps1
+scripts/profile-switching/*-credentials.ps1
+scripts/profile-switching/*.secret.ps1
