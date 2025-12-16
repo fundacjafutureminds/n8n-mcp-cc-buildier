@@ -17,5 +17,6 @@ node_modules/
 
 # Profile switching credentials (keep templates, ignore customized versions)
 scripts/profile-switching/YOUR-CREDENTIALS.ps1
+scripts/profile-switching/YOUR-CREDENTIALS.ps1.example
 scripts/profile-switching/*-credentials.ps1
 scripts/profile-switching/*.secret.ps1
