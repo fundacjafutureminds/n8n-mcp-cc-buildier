@@ -20,3 +20,4 @@ scripts/profile-switching/YOUR-CREDENTIALS.ps1
 scripts/profile-switching/YOUR-CREDENTIALS.ps1.example
 scripts/profile-switching/*-credentials.ps1
 scripts/profile-switching/*.secret.ps1
+scripts/profile-switching/full-config-example.json
